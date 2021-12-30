@@ -61,6 +61,9 @@ public class Background {
     }
 
     public void update(float dt) {
+        if (gc.getAsteroidController().getActiveList().size() < 3) {
+            gc.getAsteroidController().setup(ScreenManager.SCREEN_WIDTH + 256, ScreenManager.SCREEN_HEIGHT / 2);
+        }
         for (int i = 0; i < stars.length; i++) {
             stars[i].update(dt);
         }
