@@ -30,6 +30,10 @@ public class Hero {
         return scoreView;
     }
 
+    public byte getHealth() {
+        return health;
+    }
+
     public Circle getHitArea() {
         return hitArea;
     }
@@ -73,34 +77,36 @@ public class Hero {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (fireTimer > 0.2f) {
-                fireTimer = 0.0f;
-                float wx = position.x + MathUtils.cosDeg(angle + 90) * 20;
-                float wy = position.y + MathUtils.sinDeg(angle + 90) * 20;
+        if (health > 0) {
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                if (fireTimer > 0.2f) {
+                    fireTimer = 0.0f;
+                    float wx = position.x + MathUtils.cosDeg(angle + 90) * 20;
+                    float wy = position.y + MathUtils.sinDeg(angle + 90) * 20;
 
-                gc.getBulletController().setup(wx, wy,
-                        MathUtils.cosDeg(angle) * 500.0f + velocity.x,
-                        MathUtils.sinDeg(angle) * 500.0f + velocity.y);
+                    gc.getBulletController().setup(wx, wy,
+                            MathUtils.cosDeg(angle) * 500.0f + velocity.x,
+                            MathUtils.sinDeg(angle) * 500.0f + velocity.y);
 
-                wx = position.x + MathUtils.cosDeg(angle - 90) * 20;
-                wy = position.y + MathUtils.sinDeg(angle - 90) * 20;
+                    wx = position.x + MathUtils.cosDeg(angle - 90) * 20;
+                    wy = position.y + MathUtils.sinDeg(angle - 90) * 20;
 
-                gc.getBulletController().setup(wx, wy,
-                        MathUtils.cosDeg(angle) * 500.0f + velocity.x,
-                        MathUtils.sinDeg(angle) * 500.0f + velocity.y);
+                    gc.getBulletController().setup(wx, wy,
+                            MathUtils.cosDeg(angle) * 500.0f + velocity.x,
+                            MathUtils.sinDeg(angle) * 500.0f + velocity.y);
+                }
             }
-        }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            angle += 180.0f * dt;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            angle -= 180.0f * dt;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
-            velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                angle += 180.0f * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                angle -= 180.0f * dt;
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
+                velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+            }
         }
         position.mulAdd(velocity, dt);
 
@@ -132,9 +138,11 @@ public class Hero {
     }
 
     public void setDamage(byte damage){
-        health -= damage;
-        System.out.println(health);
+        if (health > 0) {
+            health -= damage;
+        }
         if (health <= 0) {
+            health = 0;
             deactivate();
         }
     }

@@ -10,12 +10,14 @@ public class WorldRenderer {
     private GameController gc;
     private SpriteBatch batch;
     private BitmapFont font32;
+    private BitmapFont hpText;
     private StringBuilder sb;
 
     public WorldRenderer(GameController gc, SpriteBatch batch) {
         this.gc = gc;
         this.batch = batch;
         this.font32 = Assets.getInstance().getAssetManager().get("fonts/font32.ttf", BitmapFont.class);
+        this.hpText = Assets.getInstance().getAssetManager().get("fonts/font32.ttf", BitmapFont.class);
         this.sb = new StringBuilder();
     }
 
@@ -29,6 +31,7 @@ public class WorldRenderer {
         sb.setLength(0);
         sb.append("SCORE: ").append(gc.getHero().getScoreView());
         font32.draw(batch, sb, 20, 700);
+        hpText.draw(batch, gc.getHero().getHealth() + " HP", ScreenManager.SCREEN_WIDTH - 100, 700);
 
         if (!gc.getHero().isActive()) {
             font32.draw(batch, "Game over", ScreenManager.SCREEN_WIDTH / 2 - 60, ScreenManager.SCREEN_HEIGHT / 2);
