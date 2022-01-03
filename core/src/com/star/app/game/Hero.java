@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.star.app.game.helpers.Poolable;
 import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
@@ -19,10 +21,17 @@ public class Hero {
     private float fireTimer;
     private int score;
     private int scoreView;
+    private byte health;
+    private Circle hitArea;
+    private boolean active;
 
 
     public int getScoreView() {
         return scoreView;
+    }
+
+    public Circle getHitArea() {
+        return hitArea;
     }
 
     public Vector2 getVelocity() {
@@ -44,6 +53,9 @@ public class Hero {
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 500.0f;
+        this.health = 3;
+        this.hitArea = new Circle(0, 0, 0);
+        this.active = true;
     }
 
     public void render(SpriteBatch batch) {
@@ -115,5 +127,23 @@ public class Hero {
             velocity.y *= -0.5f;
         }
 
+        hitArea.setPosition(position);
+        hitArea.setRadius(128);
+    }
+
+    public void setDamage(byte damage){
+        health -= damage;
+        System.out.println(health);
+        if (health <= 0) {
+            deactivate();
+        }
+    }
+
+    private void deactivate() {
+        active = false;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }
