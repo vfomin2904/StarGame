@@ -9,6 +9,8 @@ import com.star.app.game.helpers.Poolable;
 import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
+import java.util.Random;
+
 public class Asteroid implements Poolable {
     private GameController gc;
     private TextureRegion texture;
@@ -69,6 +71,13 @@ public class Asteroid implements Poolable {
         hp -= amount;
         if (hp <= 0) {
             deactivate();
+            Random random = new Random();
+            float randomFloat = random.nextFloat();
+            if (scale == 1.f && randomFloat <= 0.4f ||
+                    scale == 0.75f && randomFloat <= 0.3f ||
+                    scale == 0.5f && randomFloat <= 0.2f) {
+                gc.getItemController().setup(position.x, position.y);
+            }
             if (scale > 0.3f) {
                 gc.getAsteroidController().setup(position.x, position.y,
                         MathUtils.random(-150, 150), MathUtils.random(-150, 150), scale - 0.25f);
