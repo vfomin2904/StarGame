@@ -1,6 +1,9 @@
 package com.star.app.game;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextArea;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.star.app.screen.ScreenManager;
 
 public class GameController {
@@ -62,6 +65,11 @@ public class GameController {
             }
         }
 
-        
+        for (int i = 0; i < asteroidController.getActiveList().size(); i++) {
+            if (hero.getHitArea().contains(asteroidController.getActiveList().get(i).getPosition())) {
+                hero.setDamage((byte) 1);
+                asteroidController.getActiveList().get(i).deactivate();
+            }
+        }
     }
 }
