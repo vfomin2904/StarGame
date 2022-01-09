@@ -24,6 +24,7 @@ public class Hero {
     private int scoreView;
     private int hpMax;
     private int hp;
+    private int coin;
     private StringBuilder sb;
     private Circle hitArea;
     private Weapon currentWeapon;
@@ -57,6 +58,7 @@ public class Hero {
         this.enginePower = 500.0f;
         this.hpMax = 100;
         this.hp = hpMax;
+        this.coin = 0;
         this.sb = new StringBuilder();
         this.hitArea = new Circle(position, 29);
         this.currentWeapon = new Weapon(gc, this, "Laser", 0.1f, 1, 600.0f, 300,
@@ -83,6 +85,18 @@ public class Hero {
 
     public void takeDamage(int amount) {
         hp -= amount;
+    }
+
+    public void addHp(int hp) {
+        this.hp += hp;
+    }
+
+    public void addCoin(int coin) {
+        this.coin += coin;
+    }
+
+    public void addBullet(int bullet) {
+        currentWeapon.addBullet(bullet);
     }
 
     public void update(float dt) {

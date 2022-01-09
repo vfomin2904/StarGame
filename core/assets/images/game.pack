@@ -1,5 +1,5 @@
 
-images1.png
+images2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -29,5 +29,26 @@ star16
   xy: 326, 36
   size: 16, 16
   orig: 16, 16
+  offset: 0, 0
+  index: -1
+ammunition
+  rotate: false
+  xy: 380, 61
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+coin
+  rotate: false
+  xy: 380, 110
+  size: 37, 36
+  orig: 37, 36
+  offset: 0, 0
+  index: -1
+health
+  rotate: false
+  xy: 356, 5
+  size: 85, 50
+  orig: 85, 50
   offset: 0, 0
   index: -1
