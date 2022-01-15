@@ -12,18 +12,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.star.app.game.Background;
 import com.star.app.screen.utils.Assets;
 
 
 public class MenuScreen extends AbstractScreen {
+    private Background background;
     private BitmapFont font72;
     private BitmapFont font24;
     private Stage stage;
-    private boolean isStartedGame = false;
-
-    public void setStartedGame(boolean startedGame) {
-        isStartedGame = startedGame;
-    }
 
     public MenuScreen(SpriteBatch batch) {
         super(batch);
@@ -31,6 +28,7 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        this.background = new Background(null);
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
@@ -46,18 +44,13 @@ public class MenuScreen extends AbstractScreen {
         skin.add("simpleSkin", textButtonStyle);
 
         Button btnNewGame = new TextButton("New Game", textButtonStyle);
-        Button btnContinueGame = new TextButton("Continue Game", textButtonStyle);
         Button btnExitGame = new TextButton("Exit Game", textButtonStyle);
-
-        btnContinueGame.setPosition(480, 310);
         btnNewGame.setPosition(480, 210);
         btnExitGame.setPosition(480, 110);
 
         btnNewGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                isStartedGame = true;
-                ScreenManager.clearGameScreen();
                 ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
             }
         });
@@ -69,24 +62,15 @@ public class MenuScreen extends AbstractScreen {
             }
         });
 
-        btnContinueGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAME);
-            }
-        });
-
         stage.addActor(btnNewGame);
         stage.addActor(btnExitGame);
-        if (isStartedGame) {
-            stage.addActor(btnContinueGame);
-        }
         skin.dispose();
 
 
     }
 
     public void update(float dt) {
+        background.update(dt);
         stage.act(dt);
     }
 
@@ -95,6 +79,7 @@ public class MenuScreen extends AbstractScreen {
         update(delta);
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1);
         batch.begin();
+        background.render(batch);
         font72.draw(batch, "Star Game 2022", 0, 600, 1280, Align.center, false);
         batch.end();
         stage.draw();
@@ -102,6 +87,7 @@ public class MenuScreen extends AbstractScreen {
 
     @Override
     public void dispose() {
-
+        background.dispose();
+        stage.dispose();
     }
 }

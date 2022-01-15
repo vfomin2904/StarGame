@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.star.app.StarGame;
+import com.star.app.game.Hero;
 import com.star.app.screen.utils.Assets;
 
 public class ScreenManager {
@@ -46,21 +47,14 @@ public class ScreenManager {
         this.loadingScreen = new LoadingScreen(batch);
     }
 
-    public static void clearGameScreen() {
-        ourInstance.gameScreen = new GameScreen(ourInstance.batch);
-    }
-
-    public void setScore(int score) {
-        this.gameOverScreen.setScore(score);
-    }
-
     public void resize(int width, int height) {
         viewport.update(width, height);
         viewport.apply();
     }
 
-    public void changeScreen(ScreenType type) {
+    public void changeScreen(ScreenType type, Object... agrs) {
         Screen screen = game.getScreen();
+        Assets.getInstance().clear();
         if (screen != null) {
             screen.dispose();
         }
@@ -77,7 +71,7 @@ public class ScreenManager {
                 break;
             case GAMEOVER:
                 targetScreen = gameOverScreen;
-                menuScreen.setStartedGame(false);
+                gameOverScreen.setDefeatedHero((Hero) agrs[0]);
                 Assets.getInstance().loadAssets(ScreenType.GAMEOVER);
                 break;
         }

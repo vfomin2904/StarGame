@@ -11,58 +11,41 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.star.app.game.Background;
+import com.star.app.game.Hero;
 import com.star.app.screen.utils.Assets;
 
 
 public class GameOverScreen extends AbstractScreen {
+    private Background background;
     private BitmapFont font72;
+    private BitmapFont font48;
     private BitmapFont font24;
-    private Stage stage;
-    private int score;
+    private StringBuilder sb;
+    private Hero defeatedHero;
+
+    public void setDefeatedHero(Hero defeatedHero) {
+        this.defeatedHero = defeatedHero;
+    }
 
     public GameOverScreen(SpriteBatch batch) {
         super(batch);
-    }
-
-    public void setScore(int score) {
-        this.score = score;
+        this.sb = new StringBuilder();
     }
 
     @Override
     public void show() {
-        this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        this.background = new Background(null);
         this.font72 = Assets.getInstance().getAssetManager().get("fonts/font72.ttf");
+        this.font48 = Assets.getInstance().getAssetManager().get("fonts/font48.ttf");
         this.font24 = Assets.getInstance().getAssetManager().get("fonts/font24.ttf");
-
-        Gdx.input.setInputProcessor(stage);
-
-        Skin skin = new Skin();
-        skin.addRegions(Assets.getInstance().getAtlas());
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("simpleButton");
-        textButtonStyle.font = font24;
-        skin.add("simpleSkin", textButtonStyle);
-
-        Button btnContinueGame = new TextButton("Go back to main menu", textButtonStyle);
-
-        btnContinueGame.setPosition(480, 310);
-
-        btnContinueGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
-            }
-        });
-
-        stage.addActor(btnContinueGame);
-        skin.dispose();
-
-
     }
 
     public void update(float dt) {
-        stage.act(dt);
+        background.update(dt);
+        if( Gdx.input.justTouched()){
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.MENU);
+        }
     }
 
     @Override
@@ -70,14 +53,19 @@ public class GameOverScreen extends AbstractScreen {
         update(delta);
         ScreenUtils.clear(0.0f, 0.0f, 0.0f, 1);
         batch.begin();
-        font72.draw(batch, "Game Over", 0, 600, 1280, Align.center, false);
-        font24.draw(batch, "Score: "+score, 0, 500, 1280, Align.center, false);
+        background.render(batch);
+        font72.draw(batch, "Game over", 0, 600, 1280, Align.center, false);
+        sb.setLength(0);
+        sb.append("SCORE: ").append(defeatedHero.getScore()).append("\n");
+        sb.append("MONEY: ").append(defeatedHero.getMoney()).append("\n");
+        font48.draw(batch, sb, 0, 400, 1280, Align.center, false);
+        font24.draw(batch, "Tap screen to return to main menu...",
+                0, 60, 1280, Align.center, false);
         batch.end();
-        stage.draw();
     }
 
     @Override
     public void dispose() {
-
+        background.dispose();
     }
 }
