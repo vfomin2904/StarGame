@@ -9,7 +9,7 @@ import com.star.app.screen.utils.Assets;
 
 public class ScreenManager {
     public enum ScreenType{
-        GAME, MENU
+        GAME, MENU, GAMEOVER
     }
     public static final int SCREEN_WIDTH = 1280;
     public static final int SCREEN_HEIGHT = 720;
@@ -19,6 +19,7 @@ public class ScreenManager {
     private LoadingScreen loadingScreen;
     private GameScreen gameScreen;
     private MenuScreen menuScreen;
+    private GameOverScreen gameOverScreen;
     private Screen targetScreen;
     private Viewport viewport;
 
@@ -41,7 +42,16 @@ public class ScreenManager {
         this.viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.gameScreen = new GameScreen(batch);
         this.menuScreen = new MenuScreen(batch);
+        this.gameOverScreen = new GameOverScreen(batch);
         this.loadingScreen = new LoadingScreen(batch);
+    }
+
+    public static void clearGameScreen() {
+        ourInstance.gameScreen = new GameScreen(ourInstance.batch);
+    }
+
+    public void setScore(int score) {
+        this.gameOverScreen.setScore(score);
     }
 
     public void resize(int width, int height) {
@@ -51,7 +61,6 @@ public class ScreenManager {
 
     public void changeScreen(ScreenType type) {
         Screen screen = game.getScreen();
-        Assets.getInstance().clear();
         if (screen != null) {
             screen.dispose();
         }
@@ -65,6 +74,11 @@ public class ScreenManager {
             case MENU:
                 targetScreen = menuScreen;
                 Assets.getInstance().loadAssets(ScreenType.MENU);
+                break;
+            case GAMEOVER:
+                targetScreen = gameOverScreen;
+                menuScreen.setStartedGame(false);
+                Assets.getInstance().loadAssets(ScreenType.GAMEOVER);
                 break;
         }
     }
