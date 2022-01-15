@@ -68,7 +68,7 @@ public class GameController {
     }
 
     private void generateAsteroid() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
                     MathUtils.random(-200, 200),
