@@ -120,6 +120,7 @@ public class Hero {
         sb.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
         sb.append("BULLERS: ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets()).append("\n");
         sb.append("MONEY: ").append(money).append("\n");
+        sb.append("LEVEL: ").append(gc.getLevel()).append("\n");
         font.draw(batch, sb, 20, 700);
     }
 

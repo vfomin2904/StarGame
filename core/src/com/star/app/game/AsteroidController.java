@@ -29,6 +29,9 @@ public class AsteroidController extends ObjectPool<Asteroid> {
     }
 
     public void update(float dt){
+        if (activeList.isEmpty()) {
+            gc.upLevel();
+        }
         for (int i = 0; i < activeList.size(); i++) {
             activeList.get(i).update(dt);
         }
