@@ -24,10 +24,14 @@ public class Hero {
     private int scoreView;
     private int hpMax;
     private int hp;
-    private int coin;
     private StringBuilder sb;
     private Circle hitArea;
     private Weapon currentWeapon;
+    private int money;
+
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
 
     public float getAngle() {
         return angle;
@@ -58,14 +62,13 @@ public class Hero {
         this.enginePower = 500.0f;
         this.hpMax = 100;
         this.hp = hpMax;
-        this.coin = 0;
         this.sb = new StringBuilder();
         this.hitArea = new Circle(position, 29);
         this.currentWeapon = new Weapon(gc, this, "Laser", 0.1f, 1, 600.0f, 300,
                 new Vector3[]{
-                    new Vector3(28, 0, 0),
-                    new Vector3(28, 90, 20),
-                    new Vector3(28, -90, -20)
+                        new Vector3(28, 0, 0),
+                        new Vector3(28, 90, 20),
+                        new Vector3(28, -90, -20)
                 });
     }
 
@@ -74,6 +77,7 @@ public class Hero {
         sb.append("SCORE: ").append(scoreView).append("\n");
         sb.append("HP: ").append(hp).append(" / ").append(hpMax).append("\n");
         sb.append("BULLERS: ").append(currentWeapon.getCurBullets()).append(" / ").append(currentWeapon.getMaxBullets()).append("\n");
+        sb.append("MONEY: ").append(money).append("\n");
         font.draw(batch, sb, 20, 700);
     }
 
@@ -87,16 +91,18 @@ public class Hero {
         hp -= amount;
     }
 
-    public void addHp(int hp) {
-        this.hp += hp;
-    }
-
-    public void addCoin(int coin) {
-        this.coin += coin;
-    }
-
-    public void addBullet(int bullet) {
-        currentWeapon.addBullet(bullet);
+    public void consume(PowerUp p) {
+        switch (p.getType()) {
+            case MEDKIT:
+                hp += p.getPower();
+                break;
+            case MONEY:
+                money += p.getPower();
+                break;
+            case AMMOS:
+                currentWeapon.addAmmos( p.getPower()) ;
+                break;
+        }
     }
 
     public void update(float dt) {

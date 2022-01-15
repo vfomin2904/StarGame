@@ -9,9 +9,13 @@ public class GameController {
     private AsteroidController asteroidController;
     private BulletController bulletController;
     private ParticleController particleController;
-    private ItemController itemController;
+    private PowerUpsController powerUpsController;
     private Hero hero;
     private Vector2 tempVec;
+
+    public PowerUpsController getPowerUpsController() {
+        return powerUpsController;
+    }
 
     public ParticleController getParticleController() {
         return particleController;
@@ -19,10 +23,6 @@ public class GameController {
 
     public AsteroidController getAsteroidController() {
         return asteroidController;
-    }
-
-    public ItemController getItemController() {
-        return itemController;
     }
 
     public Hero getHero() {
@@ -43,7 +43,7 @@ public class GameController {
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         this.particleController = new ParticleController();
-        this.itemController = new ItemController(this);
+        this.powerUpsController = new PowerUpsController(this);
         this.tempVec = new Vector2();
 
         for (int i = 0; i < 3; i++) {
@@ -60,7 +60,7 @@ public class GameController {
         asteroidController.update(dt);
         bulletController.update(dt);
         particleController.update(dt);
-        itemController.update(dt);
+        powerUpsController.update(dt);
         checkCollisions();
     }
 
@@ -100,28 +100,26 @@ public class GameController {
 
 
                     b.deactivate();
-                    if (a.takeDamage(1)) {
+                    if (a.takeDamage(hero.getCurrentWeapon().getDamage())) {
                         hero.addScore(a.getHpMax() * 100);
+                        for (int k = 0; k < 3; k++) {
+                            powerUpsController.setup(a.getPosition().x, a.getPosition().y,
+                                    a.getScale() * 0.25f);
+                        }
                     }
                     break;
                 }
             }
         }
 
-        for (int i = 0; i < itemController.getActiveList().size(); i++) {
-            Item item = itemController.getActiveList().get(0);
-            if (hero.getHitArea().overlaps(item.getHitArea())) {
-                if (item.getItemType().equals(ItemType.HEALTH)) {
-                    hero.addHp(1);
-                } else if (item.getItemType().equals(ItemType.BULLET)) {
-                    hero.addBullet(100);
-                } else if (item.getItemType().equals(ItemType.COIN)) {
-                    hero.addCoin(10);
-                }
-                item.deactivate();
+        for (int i = 0; i < powerUpsController.getActiveList().size(); i++) {
+            PowerUp p = powerUpsController.getActiveList().get(i);
+            if(hero.getHitArea().contains(p.getPosition())){
+                hero.consume(p);
+                particleController.getEffectBuilder().takePowerUpEffect(p.getPosition().x,p.getPosition().y );
+                p.deactivate();
             }
         }
-
 
     }
 }

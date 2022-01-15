@@ -1,5 +1,5 @@
 
-images2.png
+images1.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -10,6 +10,20 @@ asteroid
   orig: 256, 256
   offset: 0, 0
   index: -1
+powerups
+  rotate: false
+  xy: 2, 260
+  size: 360, 240
+  orig: 360, 240
+  offset: 0, 0
+  index: -1
+simpleButton
+  rotate: false
+  xy: 2, 502
+  size: 320, 80
+  orig: 320, 80
+  offset: 0, 0
+  index: -1
 ship
   rotate: false
   xy: 260, 2
@@ -17,9 +31,16 @@ ship
   orig: 64, 64
   offset: 0, 0
   index: -1
-bullet
+smButton
   rotate: false
   xy: 326, 2
+  size: 120, 32
+  orig: 120, 32
+  offset: 0, 0
+  index: -1
+bullet
+  rotate: false
+  xy: 448, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -29,26 +50,5 @@ star16
   xy: 326, 36
   size: 16, 16
   orig: 16, 16
-  offset: 0, 0
-  index: -1
-ammunition
-  rotate: false
-  xy: 380, 61
-  size: 37, 37
-  orig: 37, 37
-  offset: 0, 0
-  index: -1
-coin
-  rotate: false
-  xy: 380, 110
-  size: 37, 36
-  orig: 37, 36
-  offset: 0, 0
-  index: -1
-health
-  rotate: false
-  xy: 356, 5
-  size: 85, 50
-  orig: 85, 50
   offset: 0, 0
   index: -1
