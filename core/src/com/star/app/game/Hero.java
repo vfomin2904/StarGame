@@ -89,6 +89,10 @@ public class Hero {
 
     public void takeDamage(int amount) {
         hp -= amount;
+        if (hp <= 0) {
+            ScreenManager.getInstance().setScore(score);
+            ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER);
+        }
     }
 
     public void consume(PowerUp p) {
