@@ -17,6 +17,7 @@ public class GameController {
     private Vector2 tempVec;
     private Stage stage;
     private boolean pause;
+    private byte level;
 
     public void setPause(boolean pause) {
         this.pause = pause;
@@ -59,9 +60,14 @@ public class GameController {
         this.powerUpsController = new PowerUpsController(this);
         this.tempVec = new Vector2();
         this.stage = new Stage(ScreenManager.getInstance().getViewport(), batch);
+        this.level = 1;
         stage.addActor(hero.getShop());
         Gdx.input.setInputProcessor(stage);
 
+        generateAsteroid();
+    }
+
+    private void generateAsteroid() {
         for (int i = 0; i < 3; i++) {
             asteroidController.setup(MathUtils.random(0, ScreenManager.SCREEN_WIDTH),
                     MathUtils.random(0, ScreenManager.SCREEN_HEIGHT),
@@ -70,9 +76,21 @@ public class GameController {
         }
     }
 
+    public void upLevel() {
+        level += 1;
+    }
+
+    public byte getLevel() {
+        return level;
+    }
+
     public void update(float dt) {
         if (pause) {
             return;
+        }
+        if (asteroidController.getActiveList().isEmpty()) {
+            upLevel();
+            generateAsteroid();
         }
         background.update(dt);
         hero.update(dt);
@@ -104,7 +122,7 @@ public class GameController {
                 if (a.takeDamage(2)) {
                     hero.addScore(a.getHpMax() * 50);
                 }
-                hero.takeDamage(2);
+                hero.takeDamage(2 + level);
             }
         }
 
