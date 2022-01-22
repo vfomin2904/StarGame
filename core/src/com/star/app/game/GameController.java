@@ -96,8 +96,8 @@ public class GameController {
 
         generateBigAsteroids(1);
 
-        botController.setup(100, 100);
-        botController.setup(1000, 100);
+        botController.setup(100, 100, 1.0f);
+        botController.setup(1000, 100, 1.0f);
     }
 
     public void generateBigAsteroids(int n) {
@@ -174,6 +174,7 @@ public class GameController {
                     float sumScl = b.getHitArea().radius + a.getHitArea().radius;
                     b.getVelocity().mulAdd(tempVec, a.getHitArea().radius / sumScl * 100);
                     a.getVelocity().mulAdd(tempVec, -b.getHitArea().radius / sumScl * 100);
+                    a.takeDamage(2);
                 }
             }
         }
@@ -195,6 +196,8 @@ public class GameController {
                                 powerUpsController.setup(a.getPosition().x, a.getPosition().y,
                                         a.getScale() * 0.25f);
                             }
+                            botController.setup(a.getPosition().x, a.getPosition().y,
+                                    a.getScale() * 0.25f);
                         }
                     }
                     break;

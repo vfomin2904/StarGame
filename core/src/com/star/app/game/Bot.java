@@ -4,11 +4,13 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.star.app.game.helpers.Poolable;
+import com.star.app.screen.ScreenManager;
 import com.star.app.screen.utils.Assets;
 
 public class Bot extends Ship implements Poolable {
     private boolean active;
     private Vector2 tempVec;
+    private boolean isEscaped;
 
     @Override
     public boolean isActive() {
@@ -37,6 +39,18 @@ public class Bot extends Ship implements Poolable {
 
     public void update(float dt) {
         super.update(dt);
+
+        // Боты сбегают, если закончились патроны
+        if (currentWeapon.getCurBullets() <= 0) {
+            tempVec.set(position).sub(gc.getHero().getPosition()).nor();
+            angle = tempVec.angleDeg();
+            velocity.x += MathUtils.cosDeg(angle) * enginePower * dt;
+            velocity.y += MathUtils.sinDeg(angle) * enginePower * dt;
+            if (position.x > ScreenManager.SCREEN_WIDTH || position.x < 0 || position.y < 0 || position.y > ScreenManager.SCREEN_HEIGHT) {
+                deactivate();
+            }
+            return;
+        }
 
         if (!isAlive()) {
             deactivate();
