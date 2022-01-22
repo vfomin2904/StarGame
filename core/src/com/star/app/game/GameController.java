@@ -18,6 +18,7 @@ public class GameController {
     private PowerUpsController powerUpsController;
     private InfoController infoController;
     private Hero hero;
+    private Bot bot;
     private Vector2 tempVec;
     private Stage stage;
     private boolean pause;
@@ -62,6 +63,10 @@ public class GameController {
         return hero;
     }
 
+    public Bot getBot() {
+        return bot;
+    }
+
     public Background getBackground() {
         return background;
     }
@@ -73,6 +78,7 @@ public class GameController {
     public GameController(SpriteBatch batch) {
         this.background = new Background(this);
         this.hero = new Hero(this);
+        this.bot = new Bot(this);
         this.asteroidController = new AsteroidController(this);
         this.bulletController = new BulletController(this);
         this.particleController = new ParticleController();
@@ -113,38 +119,50 @@ public class GameController {
         powerUpsController.update(dt);
         infoController.update(dt);
         checkCollisions();
+        if (bot.isAlive()) {
+            bot.update(dt);
+        }
         if (!hero.isAlive()) {
             ScreenManager.getInstance().changeScreen(ScreenManager.ScreenType.GAMEOVER, hero);
         }
         if (asteroidController.getActiveList().size() == 0) {
             level++;
             generateBigAsteroids(level <= 3 ? level : 3);
+            this.bot = new Bot(this);
             timer = 0.0f;
         }
         stage.act(dt);
+    }
+
+    private void boom(Ship ship, Asteroid a) {
+        float dst = a.getPosition().dst(ship.getPosition());
+        float halfOverLen = (a.getHitArea().radius + ship.getHitArea().radius - dst) / 2;
+        tempVec.set(ship.getPosition()).sub(a.getPosition()).nor();
+        ship.getPosition().mulAdd(tempVec, halfOverLen);
+        a.getPosition().mulAdd(tempVec, -halfOverLen);
+
+        float sumScl = ship.getHitArea().radius + a.getHitArea().radius;
+        ship.getVelocity().mulAdd(tempVec, a.getHitArea().radius / sumScl * 100);
+        a.getVelocity().mulAdd(tempVec, -ship.getHitArea().radius / sumScl * 100);
+
+        if (a.takeDamage(2) && ship instanceof Hero) {
+            Hero h = (Hero) ship;
+            h.addScore(a.getHpMax() * 50);
+        }
+        ship.takeDamage(level * 2);
+        sb.setLength(0);
+        sb.append("HP -").append(level * 2);
+        infoController.setup(ship.getPosition().x, ship.getPosition().y, sb.toString(), Color.RED);
+
     }
 
     private void checkCollisions() {
         for (int i = 0; i < asteroidController.getActiveList().size(); i++) {
             Asteroid a = asteroidController.getActiveList().get(i);
             if (a.getHitArea().overlaps(hero.getHitArea())) {
-                float dst = a.getPosition().dst(hero.getPosition());
-                float halfOverLen = (a.getHitArea().radius + hero.getHitArea().radius - dst) / 2;
-                tempVec.set(hero.getPosition()).sub(a.getPosition()).nor();
-                hero.getPosition().mulAdd(tempVec, halfOverLen);
-                a.getPosition().mulAdd(tempVec, -halfOverLen);
-
-                float sumScl = hero.getHitArea().radius + a.getHitArea().radius;
-                hero.getVelocity().mulAdd(tempVec, a.getHitArea().radius / sumScl * 100);
-                a.getVelocity().mulAdd(tempVec, -hero.getHitArea().radius / sumScl * 100);
-
-                if (a.takeDamage(2)) {
-                    hero.addScore(a.getHpMax() * 50);
-                }
-                hero.takeDamage(level * 2);
-                sb.setLength(0);
-                sb.append("HP -").append(level * 2);
-                infoController.setup(hero.getPosition().x, hero.getPosition().y, sb.toString(), Color.RED);
+                boom(hero, a);
+            } else if (a.getHitArea().overlaps(bot.getHitArea())) {
+                boom(bot, a);
             }
         }
 
@@ -186,6 +204,15 @@ public class GameController {
                 hero.consume(p);
                 particleController.getEffectBuilder().takePowerUpEffect(p.getPosition().x, p.getPosition().y, p.getType());
                 p.deactivate();
+            }
+        }
+
+        for (int i = 0; i < bulletController.getActiveList().size(); i++) {
+            Bullet bullet = bulletController.getActiveList().get(i);
+            if (hero.getHitArea().contains(bullet.getPosition()) && !bullet.isHeroBullet()) {
+                hero.takeDamage(3);
+            } else if (bot.getHitArea().contains(bullet.getPosition()) && bullet.isHeroBullet()) {
+                bot.takeDamage(10);
             }
         }
 

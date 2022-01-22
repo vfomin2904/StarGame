@@ -10,6 +10,7 @@ public class Bullet implements Poolable {
     private Vector2 position;
     private Vector2 velocity;
     private boolean active;
+    private boolean isHeroBullet;
 
     @Override
     public boolean isActive() {
@@ -51,9 +52,14 @@ public class Bullet implements Poolable {
         }
     }
 
-    public void activate(float x, float y, float vx, float vy) {
+    public boolean isHeroBullet() {
+        return isHeroBullet;
+    }
+
+    public void activate(float x, float y, float vx, float vy, boolean isHeroBullet) {
         position.set(x, y);
         velocity.set(vx, vy);
         active = true;
+        this.isHeroBullet = isHeroBullet;
     }
 }
