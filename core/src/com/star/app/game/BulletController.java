@@ -26,8 +26,8 @@ public class BulletController extends ObjectPool<Bullet> {
         }
     }
 
-    public void setup(float x, float y, float vx, float vy, boolean isHeroBullet){
-        getActiveElement().activate(x, y, vx, vy, isHeroBullet);
+    public void setup(Ship owner, float x, float y, float vx, float vy){
+        getActiveElement().activate(owner, x, y, vx, vy);
     }
 
     public void update(float dt){

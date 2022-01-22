@@ -56,14 +56,13 @@ public class Weapon {
         if (curBullets > 0) {
             curBullets--;
             shootSound.play();
-            boolean isHeroBullet = ship instanceof Hero;
             for (int i = 0; i < slots.length; i++) {
                 float x, y, vx, vy;
                 x = ship.getPosition().x + MathUtils.cosDeg(ship.getAngle() + slots[i].y) * slots[i].x;
                 y = ship.getPosition().y + MathUtils.sinDeg(ship.getAngle() + slots[i].y) * slots[i].x;
                 vx = ship.getVelocity().x + bulletSpeed * MathUtils.cosDeg(ship.getAngle() + slots[i].z);
                 vy = ship.getVelocity().y + bulletSpeed * MathUtils.sinDeg(ship.getAngle() + slots[i].z);
-                gc.getBulletController().setup(x, y, vx, vy, isHeroBullet);
+                gc.getBulletController().setup(ship, x, y, vx, vy);
             }
         }
     }
